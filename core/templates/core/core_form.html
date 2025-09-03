@@ -1,0 +1,140 @@
+{% extends 'layout.html' %}
+
+{% block title %}
+Create New Entry - Django Project
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+    <!-- Back Button -->
+    <a href="{% url 'core_list' %}" class="btn btn-outline-secondary mb-4">
+        <i class="fas fa-arrow-left me-1"></i> Back to Entries
+    </a>
+    
+    <div class="card">
+        <div class="card-header bg-white py-3">
+            <h4 class="mb-0"><i class="fas fa-plus-circle me-2 text-primary"></i>Create New Entry</h4>
+        </div>
+        <div class="card-body p-4">
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <!-- Display form errors -->
+                {% if form.errors %}
+                <div class="alert alert-danger">
+                    <strong>Please correct the errors below:</strong>
+                    <ul>
+                        {% for field in form %}
+                            {% for error in field.errors %}
+                                <li>{{ field.label }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                        {% for error in form.non_field_errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                <!-- Username/User Field -->
+                <div class="mb-4">
+                    <label for="id_user" class="form-label">User</label>
+                    {{ form.user }}
+                </div>
+
+                <!-- Text Content Field -->
+                <div class="mb-4">
+                    <label for="id_text" class="form-label">Content</label>
+                    {{ form.text }}
+                    <div class="form-text">Write your content here. You can use basic HTML formatting.</div>
+                </div>
+
+                <!-- Image Upload Field -->
+                <div class="mb-4">
+                    <label for="id_photo" class="form-label">Upload Image</label>
+                    {{ form.photo }}
+                    
+                    <div class="image-preview mt-3" id="imagePreview">
+                        <div class="text-center text-muted">
+                            <i class="fas fa-image fa-3x mb-2"></i>
+                            <p>Image preview will appear here</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Form Buttons -->
+                <div class="d-flex gap-2 justify-content-end pt-3">
+                    <a href="{% url 'core_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-times me-1"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-check me-1"></i> Create Entry
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Help Section -->
+    <div class="card mt-4">
+        <div class="card-body">
+            <h5><i class="fas fa-question-circle me-2 text-primary"></i>Creating Effective Entries</h5>
+            <ul class="list-unstyled">
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Write clear and concise content</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Add relevant images to enhance your entry</li>
+                <li class="mb-2"><i class="fas fa-check-circle text-success me-2"></i> Choose appropriate content for your audience</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<style>
+    .image-preview {
+        height: 250px;
+        border: 2px dashed #dee2e6;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+    .image-preview img {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #3b5998;
+        box-shadow: 0 0 0 0.25rem rgba(59, 89, 152, 0.25);
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const imageUpload = document.getElementById('id_photo');
+        const imagePreview = document.getElementById('imagePreview');
+        
+        if (imageUpload) {
+            imageUpload.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    
+                    reader.addEventListener('load', function() {
+                        imagePreview.innerHTML = `<img src="${reader.result}" alt="Image preview">`;
+                    });
+                    
+                    reader.readAsDataURL(file);
+                } else {
+                    imagePreview.innerHTML = `
+                        <div class="text-center text-muted">
+                            <i class="fas fa-image fa-3x mb-2"></i>
+                            <p>Image preview will appear here</p>
+                        </div>`;
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
