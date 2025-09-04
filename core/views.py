@@ -6,31 +6,31 @@ def index(request):
     return render(request, 'core/index.html')
 
 def core_list(request):
-   core = Core.objects.all().order_by('-created_at')  # کلاس کا نام Capitalized ہونا چاہیے
+   core = Core.objects.all().order_by('-created_at')  
    return render(request, 'core/core_list.html', {'core': core})
 
-def core_create(request):  # کالون غائب تھا
+def core_create(request):  
    if request.method == 'POST':
-      form = CoreForm(request.POST, request.FILES)  # کلاس کا نام Capitalized ہونا چاہیے
+      form = CoreForm(request.POST, request.FILES)  
       if form.is_valid():
             core = form.save(commit=False)
             core.user = request.user
             core.save()
             return redirect('core_list')
    else:
-      form = CoreForm()  # سپیلنگ کی غلطی: 'from' کی بجائے 'form' اور کلاس کا نام Capitalized
+      form = CoreForm()  
    
-   return render(request, 'core/core_form.html', {'form': form})  # یہ لائن انڈینٹیشن درست کی
+   return render(request, 'core/core_form.html', {'form': form})  
 
-def core_edit(request, core_id):  # متغیر نام میں سپیس غلط تھی
-    core = get_object_or_404(Core, pk=core_id, user=request.user)  # لائن کو درست کیا
+def core_edit(request, core_id):  
+    core = get_object_or_404(Core, pk=core_id, user=request.user)  
 
     if request.method == 'POST':
         form = CoreForm(request.POST, request.FILES, instance=core)
         if form.is_valid():
             core = form.save(commit=False)
             core.user = request.user
-            core.save()  # 'core_list' کی بجائے صرف save() کال کریں
+            core.save()  
             return redirect('core_list')
     else:
         form = CoreForm(instance=core)
